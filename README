@@ -1,0 +1,3 @@
+# Telecom & ISP Customer Churn Intelligence
+
+End-to-end data engineering, exploratory data analysis (EDA), and machine learning classification pipeline for predicting subscriber churn across multi-source telecom systems (CRM, prepaid internet recharges, landline billing, and technical support logs).
