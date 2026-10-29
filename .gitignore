@@ -2,4 +2,4 @@ venv/
 .env
 __pycache__/
 .ipynb_checkpoints/
-data/raw/*.csv
+data/raw/*.csv.venv/
