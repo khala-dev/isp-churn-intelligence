@@ -16,8 +16,8 @@ CREATE TABLE crm_subscribers (
 
     CHECK (wilaya IN ('Oran', 'Algiers', 'Constantine', 'Mascara')),
     CHECK (plan_type IN ('Idoom_ADSL', 'Idoom_Fibre')),
-    CHECK (speed_mbps IN (15, 20, 50, 100, 300)),
-    CHECK (monthly_price_dzd > 0)
+    CHECK (speed_mbps IN (15, 20, 60, 120, 180, 240, 300)),
+    CHECK (monthly_price_dzd >= 0)
 );
 
 CREATE TABLE internet_recharges (
@@ -29,7 +29,7 @@ CREATE TABLE internet_recharges (
     tx_status VARCHAR(20) NOT NULL,
     days_granted INTEGER NOT NULL,
 
-    CHECK (amount_dzd > 0),
+    CHECK (amount_dzd >= 0),
     CHECK (tx_status IN ('SUCCESS', 'FAILED', 'TIMEOUT')),
     CHECK (days_granted IN (0, 30))
 );
@@ -42,7 +42,7 @@ CREATE TABLE technical_tickets (
     issue_category VARCHAR(30) NOT NULL,
     line_attenuation_db NUMERIC(5, 2) NOT NULL,
 
-    CHECK (line_attenuation_db > 0),
+    CHECK (line_attenuation_db >= 0),
     CHECK (closed_at IS NULL OR closed_at >= opened_at)
 );
 
