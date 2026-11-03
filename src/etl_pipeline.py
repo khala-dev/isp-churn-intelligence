@@ -60,3 +60,38 @@ def clean_fixe_billing(df: pd.DataFrame) -> pd.DataFrame:
     df["landline_number"] = df["landline_number"].astype(str).str.zfill(9)
     df["paid_date"] = pd.to_datetime(df["paid_date"]).dt.date
     return df
+
+def run_pipeline():
+    print("[INFO] 1/3 Extracting raw CSV files...")
+    df_crm_raw = pd.read_csv(RAW_DATA_DIR / "crm_subscribers.csv")
+    df_rech_raw = pd.read_csv(RAW_DATA_DIR / "internet_recharges.csv")
+    df_tkt_raw = pd.read_csv(RAW_DATA_DIR / "technical_tickets.csv")
+    df_fixe_raw = pd.read_csv(RAW_DATA_DIR / "fixe_billing.csv")
+
+    print("[INFO] 2/3 Transforming and cleaning datasets...")
+    df_crm = clean_crm_subscribers(df_crm_raw)
+    df_rech = clean_internet_recharges(df_rech_raw)
+    df_tkt = clean_technical_tickets(df_tkt_raw)
+    df_fixe = clean_fixe_billing(df_fixe_raw)
+
+    print("[INFO] 3/3 Loading clean tables into PostgreSQL...")
+    engine = create_engine(DB_URI)
+
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "TRUNCATE TABLE fixe_billing, technical_tickets, "
+                "internet_recharges, crm_subscribers CASCADE;"
+            )
+        )
+
+        df_crm.to_sql("crm_subscribers", con=conn, if_exists="append", index=False)
+        df_rech.to_sql("internet_recharges", con=conn, if_exists="append", index=False)
+        df_tkt.to_sql("technical_tickets", con=conn, if_exists="append", index=False)
+        df_fixe.to_sql("fixe_billing", con=conn, if_exists="append", index=False)
+
+    print("[SUCCESS] ETL Pipeline completed successfully!")
+
+
+if __name__ == "__main__":
+    run_pipeline()
