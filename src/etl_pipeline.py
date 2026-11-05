@@ -1,11 +1,15 @@
+
+import os
 from pathlib import Path
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine, text
+from dotenv import load_dotenv
 
+load_dotenv()  # Load environment variables from .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
 RAW_DATA_DIR = BASE_DIR / "data" / "raw"
-DB_URI = "postgresql+psycopg2://postgres@localhost:5432/isp_churn_db"
+DB_URI = os.getenv("DB_URI")
 
 def clean_crm_subscribers(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop_duplicates(subset=["subscriber_id"]).copy()
